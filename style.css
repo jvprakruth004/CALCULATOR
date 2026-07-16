@@ -1,0 +1,368 @@
+/* =========================================================
+   Calculator Stylesheet
+   Modern premium UI · Glassmorphism · Dark/Light themes
+   ========================================================= */
+
+/* ---------- Design Tokens (CSS Variables) ---------- */
+:root {
+  /* Background gradient (dark default) */
+  --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #6d28d9 100%);
+
+  /* Glass surfaces */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-strong: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-blur: 18px;
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.55);
+
+  /* Accents & button gradients */
+  --accent: #a78bfa;
+  --accent-strong: #8b5cf6;
+  --operator: linear-gradient(135deg, #f472b6 0%, #c026d3 100%);
+  --equals: linear-gradient(135deg, #34d399 0%, #059669 100%);
+
+  /* Shadows */
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.37);
+  --shadow-inset: inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  --shadow-btn: 0 6px 18px rgba(0, 0, 0, 0.35);
+  --shadow-btn-hover: 0 10px 26px rgba(0, 0, 0, 0.45);
+
+  /* Geometry */
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 14px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 160ms;
+}
+
+/* Light theme override (toggled via data-theme="light" on <html>) */
+:root[data-theme="light"] {
+  --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f5f3ff 50%, #fae8ff 100%);
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --text-primary: #1e1b4b;
+  --text-muted: rgba(30, 27, 75, 0.55);
+  --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.18);
+  --shadow-inset: inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  --shadow-btn: 0 6px 18px rgba(31, 38, 135, 0.15);
+  --shadow-btn-hover: 0 10px 26px rgba(31, 38, 135, 0.25);
+}
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  /* Smooth theme transition */
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+/* ---------- App Shell (calculator + history) ---------- */
+.app {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: center;
+}
+
+/* ---------- Topbar & Icon Buttons ---------- */
+.topbar {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+}
+
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--shadow-btn);
+  transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease);
+}
+.icon-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.icon-btn:active { transform: scale(0.92); }
+.icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- Calculator Container (Glass) ---------- */
+.calculator {
+  width: 100%;
+  max-width: 360px;
+  padding: 26px;
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft), var(--shadow-inset);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---------- Display Section ---------- */
+.display {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 120px;
+  padding: 18px 22px;
+  border-radius: var(--radius-md);
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-inset);
+  overflow: hidden;
+  transition: font-size var(--dur) var(--ease);
+}
+
+/* Previous calculation line */
+.display__previous {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  min-height: 1.3em;
+  word-break: break-all;
+  text-align: right;
+}
+
+/* Current input line (auto-resizing) */
+.display__current {
+  font-size: clamp(1.8rem, 11vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  word-break: break-all;
+  text-align: right;
+  transition: font-size var(--dur) var(--ease);
+}
+/* Shrink text when content is long */
+.display__current.is-long { font-size: clamp(1.2rem, 7vw, 1.8rem); }
+
+/* Copy button inside display */
+.display__copy {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  font-size: 0.95rem;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* ---------- Loading Animation ---------- */
+.loader {
+  display: none;
+  gap: 6px;
+  justify-content: center;
+  margin: -8px 0 4px;
+}
+.loader.is-active { display: flex; }
+.loader__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: loader-bounce 1s infinite ease-in-out;
+}
+.loader__dot:nth-child(2) { animation-delay: 0.15s; }
+.loader__dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes loader-bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- Keypad Grid ---------- */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* ---------- Buttons (Base) ---------- */
+.btn {
+  position: relative;       /* anchor for ripple */
+  overflow: hidden;
+  font-family: inherit;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  box-shadow: var(--shadow-btn);
+  cursor: pointer;
+  padding: 16px 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    filter var(--dur) var(--ease);
+}
+.btn:hover {
+  background: var(--glass-bg-strong);
+  box-shadow: var(--shadow-btn-hover);
+  filter: brightness(1.08);
+}
+.btn:active {
+  transform: scale(0.94);
+  box-shadow: var(--shadow-inset);
+  filter: brightness(0.95);
+}
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Equals spans the full width */
+.btn--equals { grid-column: 1 / -1; }
+
+/* ---------- Button Variants ---------- */
+.btn--function {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.btn--operator {
+  background: var(--operator);
+  border-color: transparent;
+  color: #fff;
+}
+.btn--operator:hover { background: var(--operator); filter: brightness(1.12); }
+
+.btn--equals {
+  background: var(--equals);
+  border-color: transparent;
+  font-size: 1.6rem;
+  padding: 18px 0;
+}
+.btn--equals:hover { background: var(--equals); filter: brightness(1.1); }
+
+/* Sign / ± accent tint */
+.btn--number[data-action="sign"] { color: var(--accent); }
+
+/* ---------- Ripple Effect ---------- */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: rgba(255, 255, 255, 0.45);
+  animation: ripple-anim 600ms var(--ease);
+  pointer-events: none;
+}
+@keyframes ripple-anim {
+  to { transform: scale(2.5); opacity: 0; }
+}
+
+/* ---------- History Panel ---------- */
+.history {
+  width: 240px;
+  max-height: 60vh;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.history__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.history__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.history__list {
+  list-style: none;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.history__item {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg-strong);
+  word-break: break-all;
+  animation: fade-in var(--dur) var(--ease);
+}
+.history__item b { color: var(--text-primary); font-weight: 600; }
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  body { flex-direction: column; padding: 16px; }
+  .app { flex-direction: column; align-items: center; }
+  .history {
+    position: static;
+    width: 100%;
+    max-width: 360px;
+    max-height: 30vh;
+  }
+}
+@media (max-width: 420px) {
+  .calculator {
+    max-width: 100%;
+    padding: 20px;
+    border-radius: var(--radius-md);
+  }
+  .display__current { font-size: 2.1rem; }
+  .btn { font-size: 1.2rem; padding: 14px 0; }
+  .keypad { gap: 10px; }
+}
+
+/* ---------- Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

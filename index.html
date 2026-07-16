@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A modern, accessible glassmorphism calculator.">
+  <title>Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Theme toggle (fixed, top-right) -->
+  <header class="topbar">
+    <button class="icon-btn" id="btn-theme" type="button"
+            aria-label="Toggle dark and light theme" aria-pressed="false">🌓</button>
+  </header>
+
+  <!-- App shell: calculator + history, centered on large screens -->
+  <div class="app">
+
+    <!-- Calculator container -->
+    <main class="calculator" id="calculator" aria-label="Calculator">
+
+      <!-- Display section -->
+      <section class="display" id="display" role="region" aria-label="Calculator display">
+        <button class="icon-btn display__copy" id="btn-copy" type="button"
+                aria-label="Copy result to clipboard" title="Copy result">⧉</button>
+        <!-- Previous calculation (e.g. 12 + 5) -->
+        <output class="display__previous" id="display-previous" aria-live="polite"></output>
+        <!-- Current input / result -->
+        <output class="display__current" id="display-current" aria-live="polite">0</output>
+      </section>
+
+      <!-- Loading indicator (shown briefly during evaluation) -->
+      <div class="loader" id="loader" role="status" aria-hidden="true" aria-label="Calculating">
+        <span class="loader__dot"></span>
+        <span class="loader__dot"></span>
+        <span class="loader__dot"></span>
+      </div>
+
+      <!-- Keypad: uses aria-label so screen readers announce each button -->
+      <section class="keypad" id="keypad" role="group" aria-label="Calculator keys">
+
+        <button class="btn btn--function" id="btn-ac" type="button"
+                data-action="all-clear" aria-label="All clear">AC</button>
+        <button class="btn btn--function" id="btn-c" type="button"
+                data-action="clear" aria-label="Clear entry">C</button>
+        <button class="btn btn--function" id="btn-delete" type="button"
+                data-action="delete" aria-label="Delete last character">⌫</button>
+        <button class="btn btn--operator" id="btn-divide" type="button"
+                data-operator="÷" aria-label="Divide">÷</button>
+
+        <button class="btn btn--number" id="btn-7" type="button" data-number="7">7</button>
+        <button class="btn btn--number" id="btn-8" type="button" data-number="8">8</button>
+        <button class="btn btn--number" id="btn-9" type="button" data-number="9">9</button>
+        <button class="btn btn--operator" id="btn-multiply" type="button"
+                data-operator="×" aria-label="Multiply">×</button>
+
+        <button class="btn btn--number" id="btn-4" type="button" data-number="4">4</button>
+        <button class="btn btn--number" id="btn-5" type="button" data-number="5">5</button>
+        <button class="btn btn--number" id="btn-6" type="button" data-number="6">6</button>
+        <button class="btn btn--operator" id="btn-minus" type="button"
+                data-operator="-" aria-label="Subtract">-</button>
+
+        <button class="btn btn--number" id="btn-1" type="button" data-number="1">1</button>
+        <button class="btn btn--number" id="btn-2" type="button" data-number="2">2</button>
+        <button class="btn btn--number" id="btn-3" type="button" data-number="3">3</button>
+        <button class="btn btn--operator" id="btn-plus" type="button"
+                data-operator="+" aria-label="Add">+</button>
+
+        <button class="btn btn--number" id="btn-sign" type="button"
+                data-action="sign" aria-label="Toggle positive or negative">±</button>
+        <button class="btn btn--number" id="btn-0" type="button" data-number="0">0</button>
+        <button class="btn btn--number" id="btn-decimal" type="button"
+                data-number="." aria-label="Decimal point">.</button>
+        <button class="btn btn--operator" id="btn-percent" type="button"
+                data-operator="%" aria-label="Percent">%</button>
+
+        <button class="btn btn--equals" id="btn-equals" type="button"
+                data-action="equals" aria-label="Equals">=</button>
+
+      </section>
+
+    </main>
+
+    <!-- Calculation history panel -->
+    <aside class="history" id="history" aria-label="Calculation history">
+      <div class="history__header">
+        <h2 class="history__title">History</h2>
+        <button class="icon-btn" id="btn-clear-history" type="button"
+                aria-label="Clear history">🗑</button>
+      </div>
+      <ul class="history__list" id="history-list" aria-live="polite"></ul>
+    </aside>
+
+  </div>
+
+  <script src="script.js" defer></script>
+
+</body>
+</html>

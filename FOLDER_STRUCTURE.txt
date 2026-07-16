@@ -1,0 +1,5 @@
+calculator/
+├── index.html      # Semantic HTML5 structure + ARIA labels
+├── style.css       # Glassmorphism UI, dark/light themes, animations, responsive
+├── script.js       # Calculator logic, keyboard shortcuts, history, theme, ripple
+└── README.md       # Project documentation
